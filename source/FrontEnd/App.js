@@ -19,7 +19,7 @@ export default function App() {
       return
     }
     //save keyword
-    const newKeyWord = Object.assign( {}, keyword, {[Date.now()]: {text}} );
+    const newKeyWord = {...keyword, [Date.now()]: {text}};
     setKeyWord(newKeyWord);
     setText("");
   }
@@ -40,27 +40,47 @@ export default function App() {
         value={text}
         style={styles.input} 
         placeholder={"키워드를 입력해주세요. (예: 장학)"} />
+      <Text style={styles.titleText}>등록된 키워드</Text>
       <View style={styles.keywords}>
-        <Text style={styles.keywordsText}>등록된 키워드</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.keywords_list}>
-          <View style={styles.keyword}>
-            <Text style={styles.keywordText}>장학</Text>
-            <AntDesign name="close" size={20} style={styles.keywordText}/>
-          </View>
-          <View style={styles.keyword}>
-            <Text style={styles.keywordText}>행사</Text>
-            <AntDesign name="close" size={20} style={styles.keywordText} />
-          </View>
-          <View style={styles.keyword}>
-            <Text style={styles.keywordText}>행사</Text>
-            <AntDesign name="close" size={20} style={styles.keywordText} />
-          </View>
-          <View style={styles.keyword}>
-            <Text style={styles.keywordText}>행사</Text>
-            <AntDesign name="close" size={20} style={styles.keywordText} />
-          </View>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}>
+            {Object.keys(keyword).map((key) => (
+              <View key={key} style={styles.keyword}>
+                <Text style={styles.keywordText}>{keyword[key].text}</Text>
+                <AntDesign name="close" size={20} style={styles.keywordText}/>
+              </View>
+            ))}
+          <View style={{...styles.keyword, backgroundColor: "white"}}><Text></Text></View>
         </ScrollView>
       </View>
+      <Text style={styles.titleText}>알림</Text>
+      <ScrollView contentContainerStyle={styles.contentList}>
+        <View style={styles.content}>
+          <Text style={styles.contentTitle}>2023학년도 1학기 학부 등록금재원 우선선발장학금 신청 안내</Text>
+          <Text style={styles.contentDate}>2022.02.01</Text>
+        </View>
+        <View style={styles.content}>
+          <Text style={styles.contentTitle}>임시 테스트용 글자</Text>
+          <Text style={styles.contentDate}>2022.02.01</Text>
+        </View>
+        <View style={styles.content}>
+          <Text style={styles.contentTitle}>[멘토스쿨 운영] 2022학년도 6차 멘토스쿨</Text>
+          <Text style={styles.contentDate}>2022.02.01</Text>
+        </View>
+        <View style={styles.content}>
+          <Text style={styles.contentTitle}>2023학년도 1학기 교류 수학 안내(강원대학교 외)</Text>
+          <Text style={styles.contentDate}>2022.02.01</Text>
+        </View>
+        <View style={styles.content}>
+          <Text style={styles.contentTitle}>2023년도 한국장애인개발원 쌍용곰두리장학생 선발 안내</Text>
+          <Text style={styles.contentDate}>2022.02.01</Text>
+        </View>
+        <View style={styles.content}>
+          <Text style={styles.contentTitle}>2023학년도 1학기 (통합)연계과정 학생 및 전환 희망 학생 모집 안내</Text>
+          <Text style={styles.contentDate}>2022.02.01</Text>
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -94,16 +114,17 @@ const styles = StyleSheet.create({
   },
   keywords: {
     marginHorizontal: 20,
-    marginTop: 20,
   },
-  keywordsText: {
+  titleText: {
+    marginTop: 20,
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 10,
+    marginHorizontal: 25,
   },
   keyword: {
     flexDirection: "row",
-    backgroundColor: "black",
+    backgroundColor: "#63b6ea",
     marginHorizontal: 5,
     paddingHorizontal: 10,
     paddingVertical: 10,
@@ -115,5 +136,25 @@ const styles = StyleSheet.create({
     color: "white",
     paddingLeft: 5,
     paddingRight: 5,
-  }
+  },
+  contentList: {
+    marginHorizontal: 25,
+  },
+  content: {
+    backgroundColor: "#7fcaf8",
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    marginBottom: 15,
+  },
+  contentTitle: {
+    fontSize: 15,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  contentDate: {
+    marginTop: 5,
+    textAlign: "right",
+    marginRight: 10,
+  },
 });
