@@ -1,13 +1,26 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, Button } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const icons = {
-  "Back": "left"
-}
+const Stack = createNativeStackNavigator();
 
-export default function App() {
+const HomeScreen = ({navigation}) => {
+  return (
+    <View style={{flex: 1, alignItems: "center", justifyContent:"center"}}>
+      <Text>Home Screen</Text>
+      <Button
+      title="Go to Alert"
+      onPress={() =>
+        navigation.push("Alert")
+      }/>
+    </View>
+  );
+};
+
+const AlertScreen = ({navigation}) => {
   const [alerting, setAlerting] = useState(false);
   const [text, setText] = useState("");
   const [keyword, setKeyWord] = useState({});
@@ -23,13 +36,15 @@ export default function App() {
     setKeyWord(newKeyWord);
     setText("");
   }
-  console.log(keyword);
+  //console.log(keyword);
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
       <View style={styles.hedaer}>
-        <TouchableOpacity onPress={homepage}>
-          <AntDesign style={styles.btnIcon} name="left" size={24} color="black" />
+        <TouchableOpacity onPress={() =>
+        navigation.pop()
+      }>
+          <AntDesign style={styles.btnIcon} name="left" size={24} color="black"/>
         </TouchableOpacity>
         <Text style={styles.headerText}>알림</Text>
         <Text></Text>
@@ -82,6 +97,24 @@ export default function App() {
         </View>
       </ScrollView>
     </View>
+  );
+};
+
+export default function App() {
+  
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+        />
+        <Stack.Screen
+          name="Alert"
+          component={AlertScreen}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
@@ -141,7 +174,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 25,
   },
   content: {
-    backgroundColor: "#7fcaf8",
+    backgroundColor: "#a2dbff",
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 4,
