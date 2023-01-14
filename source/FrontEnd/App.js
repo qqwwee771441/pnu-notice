@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import MainPage from './components/MainPage';
+
 const Stack = createNativeStackNavigator();
 
 const HomeScreen = ({navigation}) => {
