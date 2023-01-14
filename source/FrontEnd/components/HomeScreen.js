@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View, ScrollView, Text, TextInput, Pressable, Image, Dimensions, StyleSheet  } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -110,6 +111,7 @@ export default function HomeScreen({navigation}) {
           <Text style={(page==1)?{color:'white'}:{color:'black'}}>즐겨찾기</Text>
         </Pressable>
       </View>
+      <StatusBar style="auto" />
     </View>
   );
 }
@@ -117,6 +119,7 @@ export default function HomeScreen({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 30,
     backgroundColor: 'white',
   },
   top: {
