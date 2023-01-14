@@ -15,10 +15,12 @@ def extract_item(item):
     title = item.find("title").text
     date = item.find("pubdate").text
     link = item.find("link").next_sibling.text.replace("\r", "").replace("\t", "").replace("\n", "")
+    author = item.find("author").text
     return {
         'title':title,
         'date':date,
-        'link':link
+        'link':link,
+        'author': author
     }
     
 def extract_items(items):
