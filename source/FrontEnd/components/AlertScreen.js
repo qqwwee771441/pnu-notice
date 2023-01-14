@@ -7,8 +7,6 @@ const AlertScreen = ({ navigation }) => {
   const [alerting, setAlerting] = useState(false);
   const [text, setText] = useState("");
   const [keyword, setKeyWord] = useState({});
-  const alertpage = () => setAlerting(true);
-  const homepage = () => setAlerting(false);
   const onChangeText = (payload) => setText(payload);
   const addKeyWord = () => {
     if (text == "") {
