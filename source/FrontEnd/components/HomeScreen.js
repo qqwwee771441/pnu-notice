@@ -18,7 +18,7 @@ function Item({ title, author, pubDate }) {
   )
 }
 
-export default function MainPage() {
+export default function HomeScreen({navigation}) {
   const [keyword, setKeyword] = useState();
   const [page, setPage] = useState(0);
   const [pressed, setPressed] = useState(0);
@@ -28,7 +28,7 @@ export default function MainPage() {
       <View style={styles.top}>
         {/*<Image style={styles.topLogo} source={require('../assets/pnulogo_copy.png')} />*/}
         <Text style={styles.topTitle}>Pnu</Text>
-        <Pressable onPressIn={() => setPressed(1)} onPressOut={() => setPressed(0)}>{
+        <Pressable onPressIn={() => setPressed(1)} onPressOut={() => setPressed(0)} onPress={() => navigation.push("Alert")}>{
           (pressed==0)?
           (<Ionicons style={styles.topIcon} name="notifications-outline" size={30} color="black" />):
           (<Ionicons style={styles.topIcon} name="notifications" size={30} color="#63b6ea" />)
@@ -117,13 +117,13 @@ export default function MainPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   top: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 30,
   },
   topLogo: {
     height: 23,
