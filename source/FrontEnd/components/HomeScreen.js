@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { View, ScrollView, Text, TextInput, Pressable, Image, Dimensions, StyleSheet  } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, ScrollView, Text, TextInput, Pressable, Image, Dimensions, StyleSheet, ActivityIndicator, Linking } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -7,23 +7,43 @@ import { AntDesign } from '@expo/vector-icons';
 
 const { width:SCREEN_WIDTH } = Dimensions.get('window');
 
-function Item({ title, author, pubDate }) {
+function Item({ title, author, pubDate, url }) {
   return (
-    <View style={styles.item}>
-      <Text style={{margin:10, fontSize:16, fontWeight:'500'}}>{title}</Text>
-      <View style={{flexDirection:'row', justifyContent:"space-between", borderTopWidth:1, borderTopColor:'#eee'}}>
-        <Text style={{margin:10, color:'#555'}}>{author}</Text>
-        <Text style={{margin:10, color:'#aaa'}}>{pubDate}</Text>
+    <Pressable onPress={() => openURL(url)}>
+      <View style={styles.item}>
+        <Text style={{margin:10, fontSize:16, fontWeight:'500'}}>{title}</Text>
+        <View style={{flexDirection:'row', justifyContent:"space-between", borderTopWidth:1, borderTopColor:'#eee'}}>
+          <Text style={{margin:10, color:'#555'}}>{author}</Text>
+          <Text style={{margin:10, color:'#aaa'}}>{pubDate}</Text>
+        </View>
       </View>
-    </View>
+    </Pressable>
   )
 }
+
+const openURL = async (url) => {
+  const supported = await Linking.canOpenURL(url);
+
+  if (supported) {
+    await Linking.openURL(url);
+  } else {
+    Alert.alert('링크에 오류가 있습니다. 제작자에게 문의해주세요.');
+  };
+};
 
 export default function HomeScreen({navigation}) {
   const [keyword, setKeyword] = useState();
   const [page, setPage] = useState(0);
   const [pressed, setPressed] = useState(0);
-
+  const [notices, setNotices] = useState([]);
+  useEffect(()=> {
+    getNotice();
+  });
+  const getNotice = async () => {
+    const response = await fetch('https://port-0-pnu-notice-api-1luhct24lcvwvdvb.gksl2.cloudtype.app/notice');
+    const json = await response.json();
+    setNotices(json);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.top}>
@@ -49,56 +69,17 @@ export default function HomeScreen({navigation}) {
       <View style={styles.list}>
         <Text style={styles.listTitle}>공지사항</Text>
         <ScrollView style={styles.listContents} showsVerticalScrollIndicator={false}>
-          <Item 
-            title={'2023학년도 1학기 교류 수학 안내(강원대학교 외)'}
-            author={'황유경'}
-            pubDate={'2023-01-06'}
-          />
-          <Item 
-            title={'2023년도 한국장애인개발원 쌍용곰두리장학생 선발 안내'}
-            author={'김효경'}
-            pubDate={'2023-01-06'}
-          />
-          <Item 
-            title={'[채용] 주식회사 에스브이씨 추천채용 안내'}
-            author={'김효경'}
-            pubDate={'2023-01-03'}
-          />
-          <Item 
-            title={'2023학년도 1학기 (통합)연계과정 학생 및 전환 희망 학생 모집 안내'}
-            author={'황유경'}
-            pubDate={'2023-01-05'}
-          />
-          <Item 
-            title={'[채용] 나비스오토모티브시스템즈(주) SW개발(C/C++) - (2023년2월입사)'}
-            author={'NAVIS-AMS'}
-            pubDate={'2022-12-26'}
-          />
-          <Item 
-            title={'[LINC 3.0] 파워반도체인재양성센터 설계트랙 교육생 모집 안내'}
-            author={'김효경'}
-            pubDate={'2023-01-05'}
-          />
-          <Item 
-            title={'[산업AI특성화] 핵심지표 설문조사'}
-            author={'김효경'}
-            pubDate={'2023-01-05'}
-          />
-          <Item 
-            title={'2023학년도 1학기 학자금 대출 기본계획 알림'}
-            author={'김효경'}
-            pubDate={'2023-01-03'}
-          />
-          <Item 
-            title={'학생과 미경유 교내·외 장학금 수혜현황 제출 요청'}
-            author={'김효경'}
-            pubDate={'2023-01-03'}
-          />
-          <Item 
-            title={keyword}
-            author={''}
-            pubDate={''}
-          />
+          {notices.length === 0 ?  (
+            <ActivityIndicator color="#63b6ea" size="large" style={{marginTop: 200}}/>
+          ): (notices.map((notice, index) => 
+            <Item
+              key={index}
+              title={notice.title}
+              author={notice.author}
+              pubDate={notice.date}
+              url={notice.link}
+            />
+          ))}
         </ScrollView>
       </View>
       <View style={{flex: 1, flexDirection: 'row'}}>
