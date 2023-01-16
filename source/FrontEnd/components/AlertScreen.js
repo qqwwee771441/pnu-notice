@@ -1,23 +1,50 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import AsnyncStorage from '@react-native-async-storage/async-storage'
+
+const STORAGE_KEYWORD = '@keyword';
 
 const AlertScreen = ({ navigation }) => {
   const [alerting, setAlerting] = useState(false);
   const [text, setText] = useState("");
   const [keyword, setKeyWord] = useState({});
+  useEffect(() => {
+    loadKeyWord();
+  }, []);
   const onChangeText = (payload) => setText(payload);
-  const addKeyWord = () => {
+  const addKeyWord = async () => {
     if (text == "") {
       return
     }
     //save keyword
     const newKeyWord = { ...keyword, [Date.now()]: { text } };
     setKeyWord(newKeyWord);
+    await saveKeyWord(newKeyWord);
     setText("");
   }
-  //console.log(keyword);
+  const delteteKeyWord = async (key) => {
+    const newKeyWord = {...keyword};
+    delete newKeyWord[key];
+    setKeyWord(newKeyWord);
+    await saveKeyWord(newKeyWord);
+  };
+  const saveKeyWord = async (toSave) => {
+    try {
+      await AsnyncStorage.setItem(STORAGE_KEYWORD, JSON.stringify(toSave));
+    } catch (e) {
+      alert(e);
+    }
+  }
+  const loadKeyWord = async () => {
+    try {
+      const s = await AsnyncStorage.getItem(STORAGE_KEYWORD);
+      s !== null ? setKeyWord(JSON.parse(s)) : null;
+    } catch (e) {
+      alert(e);
+    }
+  }
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -44,7 +71,9 @@ const AlertScreen = ({ navigation }) => {
           {Object.keys(keyword).map((key) => (
             <View key={key} style={styles.keyword}>
               <Text style={styles.keywordText}>{keyword[key].text}</Text>
-              <AntDesign name="close" size={20} style={styles.keywordText} />
+              <TouchableOpacity onPress={() => delteteKeyWord(key)}>
+                <AntDesign name="close" size={20} style={styles.keywordText} />
+              </TouchableOpacity>
             </View>
           ))}
           <View style={{ ...styles.keyword, backgroundColor: "white" }}><Text></Text></View>
