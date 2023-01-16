@@ -32,7 +32,7 @@ const AlertScreen = ({ navigation, route }) => {
   const [alerting, setAlerting] = useState(false);
   const [text, setText] = useState("");
   const [keyword, setKeyWord] = useState({});
-
+  
   const [notices, setNotices] = useState([]);
   useEffect(() => {
     setNotices(FindWithTags(route.params.notices, keyword));
