@@ -58,7 +58,7 @@ export default function HomeScreen({ navigation: { navigate } }) {
     <View style={styles.container}>
       <View style={styles.top}>
         <Pressable onPress={initKeyword}><Text style={styles.topTitle}>Pnu</Text></Pressable>
-        <Pressable onPressIn={() => setPressed(1)} onPressOut={() => setPressed(0)} onPress={() => navigate('Alert', {notices: notices})}>{
+        <Pressable onPressIn={() => setPressed(1)} onPressOut={() => setPressed(0)} onPress={() => navigate('Alert', {notices: allNotices})}>{
           (pressed==0)?
           (<Ionicons style={styles.topIcon} name="notifications-outline" size={30} color="black" />):
           (<Ionicons style={styles.topIcon} name="notifications" size={30} color="#63b6ea" />)
