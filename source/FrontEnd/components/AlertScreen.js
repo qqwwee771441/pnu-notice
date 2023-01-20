@@ -19,8 +19,9 @@ function Item({ title, date, url }) {
 }
 
 const openURL = async (url) => {
-  const supported = await Linking.canOpenURL(url);
-
+  // 링크가 유효한지 확인
+  //const supported = await Linking.canOpenURL(url);
+  supported = 1;
   if (supported) {
     await Linking.openURL(url);
   } else {
@@ -62,7 +63,7 @@ const AlertScreen = ({ navigation, route }) => {
     try {
       await AsnyncStorage.setItem(STORAGE_KEYWORD, JSON.stringify(toSave));
     } catch (e) {
-      alert(e);
+      Alert.alert(e);
     }
   }
   const loadKeyWord = async () => {
@@ -70,7 +71,7 @@ const AlertScreen = ({ navigation, route }) => {
       const s = await AsnyncStorage.getItem(STORAGE_KEYWORD);
       s !== null ? setKeyWord(JSON.parse(s)) : null;
     } catch (e) {
-      alert(e);
+      Alert.alert(e);
     }
   }
   return (
@@ -109,8 +110,9 @@ const AlertScreen = ({ navigation, route }) => {
       </View>
       <Text style={styles.titleText}>알림</Text>
       <ScrollView contentContainerStyle={styles.contentList}>
-        {notices.length > 0 && (notices.map((notice) => 
+        {notices.length > 0 && (notices.map((notice, index) => 
           <Item
+            key={index}
             title={notice.title}
             date={notice.date}
             url={notice.link}

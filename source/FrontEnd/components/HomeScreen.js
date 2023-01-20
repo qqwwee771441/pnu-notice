@@ -81,8 +81,9 @@ export default function HomeScreen({ navigation: { navigate } }) {
         <ScrollView style={styles.listContents} showsVerticalScrollIndicator={false}>
           {notices.length === 0 ?  (
             <ActivityIndicator color="#63b6ea" size="large" style={{marginTop: 200}}/>
-          ): (notices.map((notice) => 
+          ): (notices.map((notice, index) => 
             <Item
+              key={index}
               title={notice.title}
               author={notice.author}
               pubDate={notice.date}
