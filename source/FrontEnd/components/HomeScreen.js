@@ -97,7 +97,7 @@ export default function HomeScreen({ navigation: { navigate } }) {
           <AntDesign name="notification" size={24} color={(page==0)?'white':'black'} />
           <Text style={(page==0)?{color:'white'}:{color:'black'}}>공지사항</Text>
         </Pressable>
-        <Pressable style={(page==1)?(styles.pressedBtn):(styles.Btn)} onPress={() => setPage(1)}>
+        <Pressable style={(page==1)?(styles.pressedBtn):(styles.Btn)} onPress={() => {setPage(1)}}>
           <AntDesign name="staro" size={24} color={(page==1)?'white':'black'} />
           <Text style={(page==1)?{color:'white'}:{color:'black'}}>즐겨찾기</Text>
         </Pressable>

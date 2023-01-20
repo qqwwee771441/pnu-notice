@@ -30,7 +30,6 @@ const openURL = async (url) => {
 };
 
 const AlertScreen = ({ navigation, route }) => {
-  const [alerting, setAlerting] = useState(false);
   const [text, setText] = useState("");
   const [keyword, setKeyWord] = useState({});
   
