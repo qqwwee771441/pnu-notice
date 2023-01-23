@@ -32,7 +32,6 @@ const openURL = async (url) => {
 const AlertScreen = ({ navigation, route }) => {
   const [text, setText] = useState("");
   const [keyword, setKeyWord] = useState({});
-  
   const [notices, setNotices] = useState([]);
   useEffect(() => {
     setNotices(FindWithTags(route.params.notices, keyword));
