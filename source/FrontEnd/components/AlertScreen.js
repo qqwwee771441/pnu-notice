@@ -1,13 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, Pressable, Linking } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, Pressable } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import AsnyncStorage from '@react-native-async-storage/async-storage'
-import FindWithTags from './FindWithTags';
+import FindWithTags from './functions/FindWithTags';
 
 const STORAGE_KEYWORD = '@keyword';
 
-function Item({ title, date, url }) {
+//import openURL from './functions/openURL';
+/*function Item({ title, date, url }) {
   return (
     <Pressable onPress={() => openURL(url)}>
       <View style={styles.content}>
@@ -16,18 +17,7 @@ function Item({ title, date, url }) {
       </View>
     </Pressable>
   )
-}
-
-const openURL = async (url) => {
-  // 링크가 유효한지 확인
-  //const supported = await Linking.canOpenURL(url);
-  supported = 1;
-  if (supported) {
-    await Linking.openURL(url);
-  } else {
-    Alert.alert('링크에 오류가 있습니다. 제작자에게 문의해주세요.');
-  };
-};
+}*/
 
 const AlertScreen = ({ navigation, route }) => {
   const [text, setText] = useState("");
@@ -106,7 +96,7 @@ const AlertScreen = ({ navigation, route }) => {
           <View style={{ ...styles.keyword, backgroundColor: "white" }}><Text></Text></View>
         </ScrollView>
       </View>
-      <Text style={styles.titleText}>알림</Text>
+      {/*<Text style={styles.titleText}>알림</Text>
       <ScrollView contentContainerStyle={styles.contentList}>
         {notices.length > 0 && (notices.map((notice, index) => 
           <Item
@@ -116,7 +106,7 @@ const AlertScreen = ({ navigation, route }) => {
             url={notice.link}
           />
         ))}
-      </ScrollView>
+      </ScrollView>*/}
     </View>
   );
 };
