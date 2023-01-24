@@ -72,14 +72,14 @@ export default function HomeScreen({ navigation: { navigate } }) {
   };
   const saveBookMark = async (toSave) => {
     try {
-      await AsnyncStorage.setItem(STORAGE_BOOKMARK, JSON.stringify(toSave));
+      await AsyncStorage.setItem(STORAGE_BOOKMARK, JSON.stringify(toSave));
     } catch (e) {
       Alert.alert(e.message);
     }
   }
   const loadBookMarks = async () => {
     try {
-      const s = await AsnyncStorage.getItem(STORAGE_BOOKMARK);
+      const s = await AsyncStorage.getItem(STORAGE_BOOKMARK);
       s !== null ? setBookMarks(JSON.parse(s)) : null;
     } catch (e) {
       Alert.alert(e.message);
@@ -130,8 +130,10 @@ export default function HomeScreen({ navigation: { navigate } }) {
         <Pressable onPress={initKeyword}><Text style={styles.topTitle}>Pnu</Text></Pressable>
         <Pressable onPressIn={() => setPressed(1)} onPressOut={() => setPressed(0)} onPress={() => navigate('Alert', {notices: allNotices})}>{
           (pressed==0)?
-          (<Ionicons style={styles.topIcon} name="notifications-outline" size={30} color="black" />):
-          (<Ionicons style={styles.topIcon} name="notifications" size={30} color="#63b6ea" />)
+          //(<Ionicons style={styles.topIcon} name="notifications-outline" size={30} color="black" />):
+          (<Ionicons style={styles.topIcon} name="md-settings-outline" size={30} color="black" />):
+          //(<Ionicons style={styles.topIcon} name="notifications" size={30} color="#63b6ea" />)
+          (<Ionicons style={styles.topIcon} name="md-settings-sharp" size={30} color="#63b6ea" />)
         }</Pressable>
       </View>
       <View style={styles.input}>
@@ -161,7 +163,10 @@ export default function HomeScreen({ navigation: { navigate } }) {
               tagged={taggedNotices.includes(notice)}
             />
           ))) : (Object.keys(bookmarks).length === 0 ?  (
-            <Text>즐겨찾기는 공지사항을 꾹 누르시면 추가할 수 있습니다.</Text>
+            <View style={{justifyContent:'center', alignItems:'center', marginTop:100}}>
+              <AntDesign name="aliwangwang-o1" size={50} color="black" style={{margin:10, color:'#555'}} />
+              <Text style={{color:'#555'}}>공지사항을 길게 눌러 입력하세요.</Text>
+            </View>
           ): (Object.keys(bookmarks).map((key) =>
             <Item
               id={key}
@@ -169,6 +174,7 @@ export default function HomeScreen({ navigation: { navigate } }) {
               author={bookmarks[key].text.author}
               pubDate={bookmarks[key].text.pubDate}
               url={bookmarks[key].text.url}
+              //tagged={taggedNotices.includes(bookmarks[key].text)}
             />
           )))}
         </ScrollView>
@@ -200,7 +206,7 @@ const styles = StyleSheet.create({
   },
   topTitle: {
     fontSize: 26,
-    fontWeight: '800',
+    fontWeight: '900',
     color: '#43a6da',
     margin: 20,
   },

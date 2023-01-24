@@ -71,7 +71,7 @@ const AlertScreen = ({ navigation, route }) => {
         }>
           <AntDesign style={styles.btnIcon} name="left" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>알림</Text>
+        <Text style={styles.headerText}>설정</Text>
         <Text></Text>
       </View>
       <TextInput
