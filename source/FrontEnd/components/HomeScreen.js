@@ -1,18 +1,26 @@
-import { useEffect, useState } from 'react';
-import { View, ScrollView, Text, TextInput, Pressable, Dimensions, StyleSheet, ActivityIndicator, Linking } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { View, ScrollView, Text, TextInput, Pressable, Dimensions, StyleSheet, ActivityIndicator, ImageBackground } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import FindWithTags from './FindWithTags';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import openURL from './functions/openURL';
+import FindWithTags from './functions/FindWithTags';
+import isLastestNotice from './functions/isLastestNotice';
 
+const STORAGE_KEYWORD = '@keyword';
 const { height:SCREEN_HEIGHT, width:SCREEN_WIDTH } = Dimensions.get('window');
 
-function Item({ title, author, pubDate, url }) {
+function Item({ title, author, pubDate, url, tagged }) {
   return (
     <Pressable onPress={() => openURL(url)}>
-      <View style={styles.item}>
-        <Text style={{margin:10, fontSize:16, fontWeight:'500'}}>{title}</Text>
+      <View style={tagged ? styles.taggedItem : styles.item}>
+        <View style={{margin:10, flexDirection:'row', justifyContent:'space-between'}}>
+          <Text style={tagged?{fontSize:16, fontWeight:'500', color:'#63b6ea'}:{fontSize:16, fontWeight:'500'}}>{title}</Text>
+          {isLastestNotice(pubDate) && <Text style={{color:'tomato', fontSize:8}}>●</Text>}
+        </View>
         <View style={{flexDirection:'row', justifyContent:"space-between", borderTopWidth:1, borderTopColor:'#eee'}}>
           <Text style={{margin:10, color:'#555'}}>{author}</Text>
           <Text style={{margin:10, color:'#aaa'}}>{pubDate}</Text>
@@ -22,22 +30,14 @@ function Item({ title, author, pubDate, url }) {
   )
 }
 
-const openURL = async (url) => {
-  const supported = await Linking.canOpenURL(url);
-
-  if (supported) {
-    await Linking.openURL(url);
-  } else {
-    Alert.alert('링크에 오류가 있습니다. 제작자에게 문의해주세요.');
-  };
-};
-
 export default function HomeScreen({ navigation: { navigate } }) {
   const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(0);
   const [pressed, setPressed] = useState(0);
   const [notices, setNotices] = useState([]);
   const [allNotices, setAllNotices] = useState([]);
+  const [tags, setTags] = useState({});
+  const [taggedNotices, setTaggedNotices] = useState([]);
 
   const getNotice = async () => {
     const response = await fetch('https://port-0-pnu-notice-api-1luhct24lcvwvdvb.gksl2.cloudtype.app/notice');
@@ -47,6 +47,7 @@ export default function HomeScreen({ navigation: { navigate } }) {
   };
   useEffect(()=> {
     getNotice();
+    loadTags();
   }, []);
 
   const initKeyword = () => { changeKeyword(''); };
@@ -54,9 +55,28 @@ export default function HomeScreen({ navigation: { navigate } }) {
   const search = () => { setNotices(FindWithTags(allNotices, { 'key':{'text':keyword} })); };
   useEffect(search, [ keyword ]);
 
+  const loadTags = async () => {
+    try {
+      const json = await AsyncStorage.getItem(STORAGE_KEYWORD);
+      json !== null ? setTags(JSON.parse(json)) : null;
+      console.log(tags);
+    } catch (e) {
+      Alert.alert(e);
+    }
+  };
+  useFocusEffect(
+    React.useCallback(() => {
+      loadTags();
+    }, [])
+  );
+  useEffect(() => {
+    setTaggedNotices(FindWithTags(allNotices, tags));
+  }, [tags, allNotices]);
+
   return (
     <View style={styles.container}>
       <View style={styles.top}>
+        <View style={{paddingLeft:70}}></View>
         <Pressable onPress={initKeyword}><Text style={styles.topTitle}>Pnu</Text></Pressable>
         <Pressable onPressIn={() => setPressed(1)} onPressOut={() => setPressed(0)} onPress={() => navigate('Alert', {notices: allNotices})}>{
           (pressed==0)?
@@ -88,6 +108,7 @@ export default function HomeScreen({ navigation: { navigate } }) {
               author={notice.author}
               pubDate={notice.date}
               url={notice.link}
+              tagged={taggedNotices.includes(notice)}
             />
           ))}
         </ScrollView>
@@ -117,18 +138,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  topLogo: {
-    height: 23,
-    width: 62,
-    margin: 20,
-    marginLeft: 150,
-  },
   topTitle: {
     fontSize: 26,
-    fontWeight: '700',
+    fontWeight: '800',
     color: '#43a6da',
     margin: 20,
-    marginLeft: 160,
   },
   topIcon: {
     margin: 20,
@@ -167,6 +181,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
   item: {
+    backgroundColor: 'white',
+    padding: 20,
+    marginBottom: 10,
+  },
+  taggedItem: {
     backgroundColor: 'white',
     padding: 20,
     marginBottom: 10,
