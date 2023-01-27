@@ -1,31 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import AsnyncStorage from '@react-native-async-storage/async-storage'
-import FindWithTags from './functions/FindWithTags';
 
 const STORAGE_KEYWORD = '@keyword';
 
-//import openURL from './functions/openURL';
-/*function Item({ title, date, url }) {
-  return (
-    <Pressable onPress={() => openURL(url)}>
-      <View style={styles.content}>
-          <Text style={styles.contentTitle}>{title}</Text>
-          <Text style={styles.contentDate}>{date}</Text>
-      </View>
-    </Pressable>
-  )
-}*/
-
-const AlertScreen = ({ navigation, route }) => {
+const AlertScreen = ({ navigation }) => {
   const [text, setText] = useState("");
   const [keyword, setKeyWord] = useState({});
-  const [notices, setNotices] = useState([]);
-  useEffect(() => {
-    setNotices(FindWithTags(route.params.notices, keyword));
-  }, [ keyword ]);
 
   useEffect(() => {
     loadKeyWord();
@@ -35,7 +18,6 @@ const AlertScreen = ({ navigation, route }) => {
     if (text == "") {
       return
     }
-    //save keyword
     const newKeyWord = { ...keyword, [Date.now()]: { text } };
     setKeyWord(newKeyWord);
     await saveKeyWord(newKeyWord);
@@ -96,17 +78,6 @@ const AlertScreen = ({ navigation, route }) => {
           <View style={{ ...styles.keyword, backgroundColor: "white" }}><Text></Text></View>
         </ScrollView>
       </View>
-      {/*<Text style={styles.titleText}>알림</Text>
-      <ScrollView contentContainerStyle={styles.contentList}>
-        {notices.length > 0 && (notices.map((notice, index) => 
-          <Item
-            key={index}
-            title={notice.title}
-            date={notice.date}
-            url={notice.link}
-          />
-        ))}
-      </ScrollView>*/}
     </View>
   );
 };
@@ -164,25 +135,5 @@ const styles = StyleSheet.create({
     color: "white",
     paddingLeft: 5,
     paddingRight: 5,
-  },
-  contentList: {
-    marginHorizontal: 25,
-  },
-  content: {
-    backgroundColor: "#a2dbff",
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 4,
-    marginBottom: 15,
-  },
-  contentTitle: {
-    fontSize: 15,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-  contentDate: {
-    marginTop: 5,
-    textAlign: "right",
-    marginRight: 10,
   },
 });

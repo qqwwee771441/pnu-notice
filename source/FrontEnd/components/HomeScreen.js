@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, ScrollView, Text, TextInput, Pressable, Dimensions, StyleSheet, ActivityIndicator, ImageBackground, Alert } from 'react-native';
+import { View, ScrollView, Text, TextInput, Pressable, Dimensions, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -14,24 +14,24 @@ const STORAGE_KEYWORD = '@keyword';
 const STORAGE_BOOKMARK = '@bookmark';
 const { height:SCREEN_HEIGHT, width:SCREEN_WIDTH } = Dimensions.get('window');
 
-function Item({ title, author, pubDate, url, tagged, id }) {
+function Item({ title, author, date, link, tagged, marked, id }) {
   return (
-    <Pressable onPress={() => openURL(url)} onLongPress={()=>{page === 0 ? (addBookMarkAlert({ title, author, pubDate, url })) : (delBookMarkAlert(id))}}>
-      <View style={tagged ? styles.taggedItem : styles.item}>
+    <Pressable onPress={() => openURL(link)} onLongPress={()=>{page === 0 ? (addBookMarkAlert({ title, author, date, link })) : (delBookMarkAlert(id))}}>
+      <View style={styles.item}>
         <View style={{margin:10, flexDirection:'row', justifyContent:'space-between'}}>
-          <Text style={tagged?{fontSize:16, fontWeight:'500', color:'#63b6ea'}:{fontSize:16, fontWeight:'500'}}>{title}</Text>
-          {isLastestNotice(pubDate) && <Text style={{color:'tomato', fontSize:8}}>●</Text>}
+          <Text style={tagged?styles.itemTaggedText:styles.itemText}>{title}</Text>
+          {marked && isLastestNotice(date) && <Text style={{color:'tomato', fontSize:8, width:10}}>●</Text>}
         </View>
         <View style={{flexDirection:'row', justifyContent:"space-between", borderTopWidth:1, borderTopColor:'#eee'}}>
           <Text style={{margin:10, color:'#555'}}>{author}</Text>
-          <Text style={{margin:10, color:'#aaa'}}>{pubDate}</Text>
+          <Text style={{margin:10, color:'#aaa'}}>{date}</Text>
         </View>
       </View>
     </Pressable>
   )
 }
 
-export default function HomeScreen({ navigation: { navigate } }) {
+export default function HomeScreen({ navigation }) {
   const [keyword, setKeyword] = useState('');
   [page, setPage] = useState(0);
   const [pressed, setPressed] = useState(0);
@@ -63,7 +63,6 @@ export default function HomeScreen({ navigation: { navigate } }) {
     setBookMarks(newBookMark);
     await saveBookMark(newBookMark);
   }
-  
   const deleteBookMark = async (key) => {
     const newBookMark = {...bookmarks};
     delete newBookMark[key];
@@ -109,7 +108,6 @@ export default function HomeScreen({ navigation: { navigate } }) {
     try {
       const json = await AsyncStorage.getItem(STORAGE_KEYWORD);
       json !== null ? setTags(JSON.parse(json)) : null;
-      console.log(tags);
     } catch (e) {
       Alert.alert(e);
     }
@@ -128,11 +126,9 @@ export default function HomeScreen({ navigation: { navigate } }) {
       <View style={styles.top}>
         <View style={{paddingLeft:70}}></View>
         <Pressable onPress={initKeyword}><Text style={styles.topTitle}>Pnu</Text></Pressable>
-        <Pressable onPressIn={() => setPressed(1)} onPressOut={() => setPressed(0)} onPress={() => navigate('Alert', {notices: allNotices})}>{
+        <Pressable onPressIn={() => setPressed(1)} onPressOut={() => setPressed(0)} onPress={() => navigation.push('Alert')}>{
           (pressed==0)?
-          //(<Ionicons style={styles.topIcon} name="notifications-outline" size={30} color="black" />):
           (<Ionicons style={styles.topIcon} name="md-settings-outline" size={30} color="black" />):
-          //(<Ionicons style={styles.topIcon} name="notifications" size={30} color="#63b6ea" />)
           (<Ionicons style={styles.topIcon} name="md-settings-sharp" size={30} color="#63b6ea" />)
         }</Pressable>
       </View>
@@ -158,23 +154,25 @@ export default function HomeScreen({ navigation: { navigate } }) {
               key={index}
               title={notice.title}
               author={notice.author}
-              pubDate={notice.date}
-              url={notice.link}
+              date={notice.date}
+              link={notice.link}
               tagged={taggedNotices.includes(notice)}
+              marked={true}
             />
           ))) : (Object.keys(bookmarks).length === 0 ?  (
             <View style={{justifyContent:'center', alignItems:'center', marginTop:100}}>
               <AntDesign name="aliwangwang-o1" size={50} color="black" style={{margin:10, color:'#555'}} />
-              <Text style={{color:'#555'}}>공지사항을 길게 눌러 입력하세요.</Text>
+              <Text style={{color:'#555'}}>공지사항을 길게 눌러 추가·삭제하세요.</Text>
             </View>
           ): (Object.keys(bookmarks).map((key) =>
             <Item
               id={key}
               title={bookmarks[key].text.title}
               author={bookmarks[key].text.author}
-              pubDate={bookmarks[key].text.pubDate}
-              url={bookmarks[key].text.url}
-              //tagged={taggedNotices.includes(bookmarks[key].text)}
+              date={bookmarks[key].text.date}
+              link={bookmarks[key].text.link}
+              tagged={false}
+              marked={false}
             />
           )))}
         </ScrollView>
@@ -251,13 +249,16 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 10,
   },
-  taggedItem: {
-    backgroundColor: 'white',
-    padding: 20,
-    marginBottom: 10,
+  itemText: {
+    fontSize:16, 
+    fontWeight:'500', 
+    width:SCREEN_WIDTH-70,
   },
-  bottom: {
-    flexDirection: 'row',
+  itemTaggedText: {
+    fontSize:16, 
+    fontWeight:'500', 
+    color:'#63b6ea', 
+    width:SCREEN_WIDTH-70,
   },
   Btn: {
     width: SCREEN_WIDTH / 2,
