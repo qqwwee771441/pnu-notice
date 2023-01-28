@@ -167,6 +167,7 @@ export default function HomeScreen({ navigation }) {
           ): (Object.keys(bookmarks).map((key) =>
             <Item
               id={key}
+              key={key}
               title={bookmarks[key].text.title}
               author={bookmarks[key].text.author}
               date={bookmarks[key].text.date}

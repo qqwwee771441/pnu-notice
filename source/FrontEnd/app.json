@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "FrontEnd",
-    "slug": "FrontEnd",
+    "name": "PNUnotice",
+    "slug": "PNUnotice",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,10 +24,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.pnunotice.pnunotice"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6fcb1002-2b9a-47f9-a661-d895e8c50e3e"
+      }
     }
   }
 }
