@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "PNUnotice",
+    "name": "PNU 공지",
     "slug": "PNUnotice",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -32,7 +32,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "6fcb1002-2b9a-47f9-a661-d895e8c50e3e"
+        "projectId": "816b92b1-0ab7-4307-9403-7485b07912fc"
       }
     }
   }
