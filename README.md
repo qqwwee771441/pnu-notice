@@ -8,4 +8,4 @@ The project is an application that allows you to get the information you want fr
 
 Front-end: React Native
 
-Back-end: Flutter
+Back-end: Flask
